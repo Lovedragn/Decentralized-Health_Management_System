@@ -7,6 +7,7 @@ const API_BASE_URL = 'http://localhost:5000/api'
 
 function App() {
   const [patientId, setPatientId] = useState('patient001')
+  const [userPhoneNumber, setUserPhoneNumber] = useState('+918248157168')
   const [isCollecting, setIsCollecting] = useState(false)
   const [isQuerying, setIsQuerying] = useState(false)
   const [collectionProgress, setCollectionProgress] = useState(0)
@@ -165,7 +166,8 @@ function App() {
       }, 800)
 
       const response = await axios.post(`${API_BASE_URL}/collect-data`, {
-        patient_id: patientId
+        patient_id: patientId,
+        user_phone: userPhoneNumber
       })
 
       clearInterval(progressInterval)
@@ -356,6 +358,21 @@ function App() {
                     <button onClick={copyAddress} className="copy-btn">
                       {copiedAddress ? <Check size={14} /> : <Copy size={14} />}
                     </button>
+                  </div>
+                </div>
+                
+                <div className="profile-menu-section">
+                  <div className="phone-info">
+                    <span>Phone Number</span>
+                  </div>
+                  <div className="phone-container">
+                    <input
+                      type="tel"
+                      value={userPhoneNumber}
+                      onChange={(e) => setUserPhoneNumber(e.target.value)}
+                      placeholder="+1234567890"
+                      className="phone-input"
+                    />
                   </div>
                 </div>
                 

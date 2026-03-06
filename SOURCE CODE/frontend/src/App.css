@@ -357,6 +357,49 @@ body::before {
   border-bottom: none;
 }
 
+/* Phone Input Styles */
+.phone-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #94a3b8;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+}
+
+.phone-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.phone-input {
+  flex: 1;
+  background: 
+    linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.9) 100%),
+    linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  border: 1px solid rgba(248, 250, 252, 0.2);
+  color: #f8fafc;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-family: inherit;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.phone-input:focus {
+  border-color: rgba(248, 250, 252, 0.4);
+  background: 
+    linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.9) 100%),
+    linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+}
+
+.phone-input::placeholder {
+  color: #94a3b8;
+}
+
 .wallet-info {
   display: flex;
   align-items: center;

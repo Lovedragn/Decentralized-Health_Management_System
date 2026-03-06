@@ -32,13 +32,14 @@ w3 = None
 contract = None
 selected_account = None
 
-def send_whatsapp_message(patient_id, temperature, status):
+def send_whatsapp_message(patient_id, temperature, status, user_phone):
     """Send WhatsApp message to patient about abnormal temperature using template"""
     try:
-        patient_phone = PATIENT_PHONE_NUMBERS.get(patient_id)
+        # Use user's phone number from profile menu
+        patient_phone = user_phone
         
         if not patient_phone:
-            print(f"No phone number found for patient {patient_id}")
+            print(f"No phone number provided")
             return False
         
         # Use template message for health alerts
@@ -111,7 +112,7 @@ def send_whatsapp_message(patient_id, temperature, status):
         print(f"Error sending WhatsApp message: {str(e)}")
         return False
 
-def check_temperature_and_alert(patient_id, temperature):
+def check_temperature_and_alert(patient_id, temperature, user_phone):
     """Check temperature and send WhatsApp alert if abnormal"""
     try:
         # Normal temperature range in Celsius
@@ -120,11 +121,11 @@ def check_temperature_and_alert(patient_id, temperature):
         
         if temperature > NORMAL_MAX_TEMP:
             # High temperature alert
-            send_whatsapp_message(patient_id, temperature, "high")
+            send_whatsapp_message(patient_id, temperature, "high", user_phone)
             return "high"
         elif temperature < NORMAL_MIN_TEMP:
             # Low temperature alert
-            send_whatsapp_message(patient_id, temperature, "low")
+            send_whatsapp_message(patient_id, temperature, "low", user_phone)
             return "low"
         else:
             # Normal temperature
@@ -176,6 +177,7 @@ def collect_patient_data():
     try:
         data = request.get_json()
         patient_id = data.get('patient_id','patient001')
+        user_phone = data.get('user_phone', '+918248157168')  # Get phone number from frontend
         
         if not os.path.exists(PATIENT_DATA_FOLDER):
             return jsonify({"error": "Patient data folder not found"}), 400
@@ -244,7 +246,7 @@ def collect_patient_data():
             }
         
         # Check temperature and send WhatsApp alert if abnormal
-        temp_status = check_temperature_and_alert(patient_id, temperature_data["value"])
+        temp_status = check_temperature_and_alert(patient_id, temperature_data["value"], user_phone)
         
         if new_files:
             # Initialize blockchain if not already done
