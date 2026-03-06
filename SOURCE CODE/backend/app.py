@@ -63,7 +63,7 @@ def collect_patient_data():
     """Simulate sensor data collection"""
     try:
         data = request.get_json()
-        patient_id = data.get('patient_id', 'patient001')
+        patient_id = data.get('patient_id')
         
         if not os.path.exists(PATIENT_DATA_FOLDER):
             return jsonify({"error": "Patient data folder not found"}), 400
@@ -71,8 +71,6 @@ def collect_patient_data():
         # Get current files before collection
         current_files = set(os.listdir(PATIENT_DATA_FOLDER))
         
-        # Simulate data collection (in real app, this would collect from sensors)
-        time.sleep(10)  # Simulate collection time
         
         # Check for new files
         new_files = set(os.listdir(PATIENT_DATA_FOLDER)) - current_files

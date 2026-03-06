@@ -7,7 +7,6 @@ const API_BASE_URL = 'http://localhost:5000/api'
 
 function App() {
   const [patientId, setPatientId] = useState('patient001')
-  const [queryPatientId, setQueryPatientId] = useState('patient001')
   const [isCollecting, setIsCollecting] = useState(false)
   const [isQuerying, setIsQuerying] = useState(false)
   const [collectionProgress, setCollectionProgress] = useState(0)
@@ -163,7 +162,7 @@ function App() {
           }
           return prev + 10
         })
-      }, 200)
+      }, 800)
 
       const response = await axios.post(`${API_BASE_URL}/collect-data`, {
         patient_id: patientId
@@ -199,11 +198,11 @@ function App() {
 
     try {
       const response = await axios.post(`${API_BASE_URL}/query-records`, {
-        patient_id: queryPatientId
+        patient_id: patientId
       })
 
       if (response.data.status === 'success') {
-        addMessage('success', `Found ${response.data.record_count} record(s) for patient ${queryPatientId}`)
+        addMessage('success', `Found ${response.data.record_count} record(s) for patient ${patientId}`)
         setRecords(response.data.records)
       } else {
         addMessage('error', response.data.error || 'Query failed')
