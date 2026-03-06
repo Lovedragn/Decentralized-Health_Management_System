@@ -505,8 +505,8 @@ function App() {
                   <p>No output yet. Perform an action to see results.</p>
                 </div>
               ) : (
-                messages.map((message) => (
-                  <div key={message.id} className={`message message-${message.type}`}>
+                messages.map((message, index) => (
+                  <div key={`message-${message.id}-${index}`} className={`message message-${message.type}`}>
                     <div className="message-icon">
                       {message.type === 'success' && <CheckCircle size={16} />}
                       {message.type === 'error' && <AlertCircle size={16} />}
@@ -520,8 +520,8 @@ function App() {
 
             {records.length > 0 && (
               <div className="records-container">
-                {records.map((record) => (
-                  <div key={record.index} className="record-card">
+                {records.map((record , index) => (
+                  <div key={index} className="record-card">
                     <div className="record-header">
                       <h4>Record {record.index}</h4>
                       <div className="record-meta">

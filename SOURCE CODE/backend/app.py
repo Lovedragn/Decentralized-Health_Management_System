@@ -9,6 +9,7 @@ import base64
 from datetime import datetime
 from web3 import Web3
 from eth_utils import keccak, to_hex
+import requests
 
 app = Flask(__name__)
 CORS(app)
@@ -17,10 +18,121 @@ CORS(app)
 CONTRACT_INFO_PATH = os.path.join(os.path.dirname(__file__), "contract_address.json")
 PATIENT_DATA_FOLDER = r"C:\Users\sujit\Desktop\fwdblockchaincode\Patient_Data"
 
+# WhatsApp Configuration
+WHATSAPP_API_URL = "https://graph.facebook.com/v22.0/1082587534927592/messages"
+WHATSAPP_ACCESS_TOKEN = "EAAUFwIlkregBQyQtPGrFJblABVpBMoJ5oh0kMoyUq1oKiWOzNi0Fd4EvAZCDRE9lDWTWUoOxStsers54luc2i9PdbkZC9YBRWNzZCgkmuUdUPq10M68CwDkHWQozrrsO3sxr42HXVEC1DGPmQaHcnbuRurxDGK2xU3qeobM9ovlTpI79YiHlA0GQVQqyYxBJv31rWcZBt9A8WtWQhwzdJGcf7Dcc16VUl5ZCF"
+WHATSAPP_PHONE_NUMBER_ID = "1082587534927592"
+PATIENT_PHONE_NUMBERS = {
+    "patient001": "+918248157168",
+
+}
+
 # Global variables for blockchain connection
 w3 = None
 contract = None
 selected_account = None
+
+def send_whatsapp_message(patient_id, temperature, status):
+    """Send WhatsApp message to patient about abnormal temperature using template"""
+    try:
+        patient_phone = PATIENT_PHONE_NUMBERS.get(patient_id)
+        
+        if not patient_phone:
+            print(f"No phone number found for patient {patient_id}")
+            return False
+        
+        # Use template message for health alerts
+        payload = {
+            "messaging_product": "whatsapp",
+            "to": patient_phone,
+            "type": "template",
+            "template": {
+                "name": "hello_world",  # You need to create this template in WhatsApp Business
+                "language": {
+                    "code": "en_US"
+                },
+                # "components": [
+                #     {
+                #         "type": "body",
+                #         "parameters": [
+                #             {
+                #                 "type": "text",
+                #                 "text": str(temperature)
+                #             },
+                #             {
+                #                 "type": "text", 
+                #                 "text": "high" if status == "high" else "low"
+                #             }
+                #         ]
+                #     }
+                # ]
+            }
+        }
+        
+        # Headers for WhatsApp API
+        headers = {
+            "Authorization": f"Bearer {WHATSAPP_ACCESS_TOKEN}",
+            "Content-Type": "application/json"
+        }
+        
+        # Send WhatsApp message
+        response = requests.post(WHATSAPP_API_URL, json=payload, headers=headers)
+        
+        if response.status_code == 200:
+            print(f"WhatsApp template message sent successfully to {patient_id} at {patient_phone}")
+            print(f"Response: {response.json()}")
+            return True
+        else:
+            print(f"Failed to send WhatsApp message: {response.status_code} - {response.text}")
+            
+            # Try fallback text message (only works if user messaged us first)
+            try:
+                text_payload = {
+                    "messaging_product": "whatsapp",
+                    "to": patient_phone,
+                    "type": "text",
+                    "text": {
+                        "body": f"🚨 HEALTH ALERT: Your temperature ({temperature}°C) is {'above' if status == 'high' else 'below'} normal range. Please seek medical attention."
+                    }
+                }
+                
+                text_response = requests.post(WHATSAPP_API_URL, json=text_payload, headers=headers)
+                if text_response.status_code == 200:
+                    print(f"WhatsApp text message sent successfully to {patient_id}")
+                    return True
+                else:
+                    print(f"Text message also failed: {text_response.status_code} - {text_response.text}")
+            except Exception as e:
+                print(f"Text message fallback error: {str(e)}")
+            
+            return False
+            
+    except Exception as e:
+        print(f"Error sending WhatsApp message: {str(e)}")
+        return False
+
+def check_temperature_and_alert(patient_id, temperature):
+    """Check temperature and send WhatsApp alert if abnormal"""
+    try:
+        # Normal temperature range in Celsius
+        NORMAL_MIN_TEMP = 36.1
+        NORMAL_MAX_TEMP = 37.2
+        
+        if temperature > NORMAL_MAX_TEMP:
+            # High temperature alert
+            send_whatsapp_message(patient_id, temperature, "high")
+            return "high"
+        elif temperature < NORMAL_MIN_TEMP:
+            # Low temperature alert
+            send_whatsapp_message(patient_id, temperature, "low")
+            return "low"
+        else:
+            # Normal temperature
+            return "normal"
+            
+    except Exception as e:
+        print(f"Error checking temperature: {str(e)}")
+        return "error"
 
 def initialize_blockchain():
     """Initialize blockchain connection"""
@@ -60,10 +172,10 @@ def health_check():
 
 @app.route('/api/collect-data', methods=['POST'])
 def collect_patient_data():
-    """Simulate sensor data collection"""
+    """Collect patient data from files with WhatsApp alerts for abnormal temperature"""
     try:
         data = request.get_json()
-        patient_id = data.get('patient_id')
+        patient_id = data.get('patient_id','patient001')
         
         if not os.path.exists(PATIENT_DATA_FOLDER):
             return jsonify({"error": "Patient data folder not found"}), 400
@@ -71,9 +183,68 @@ def collect_patient_data():
         # Get current files before collection
         current_files = set(os.listdir(PATIENT_DATA_FOLDER))
         
+        # Simulate data collection (in real app, this would collect from sensors)
+        time.sleep(10)  # Simulate collection time
         
         # Check for new files
         new_files = set(os.listdir(PATIENT_DATA_FOLDER)) - current_files
+        
+        temperature_data = None
+        
+        if new_files:
+            # Read temperature data from the first new file
+            for filename in new_files:
+                file_path = os.path.join(PATIENT_DATA_FOLDER, filename)
+                if os.path.isfile(file_path):
+                    try:
+                        with open(file_path, 'r') as f:
+                            content = f.read()
+                        
+                        # Try to extract temperature from file content
+                        # Look for temperature patterns like "temp: 37.5", "temperature: 37.5°C", etc.
+                        import re
+                        
+                        # Common temperature patterns
+                        temp_patterns = [
+                            r'temp(?:erature)?\s*[:=]\s*([0-9]+\.?[0-9]*)',
+                            r'temperature\s*[:=]\s*([0-9]+\.?[0-9]*)',
+                            r'([0-9]+\.?[0-9]*)\s*°?C',
+                            r'([0-9]+\.?[0-9]*)\s*degrees?',
+                            r'body\s+temp(?:erature)?\s*[:=]\s*([0-9]+\.?[0-9]*)'
+                        ]
+                        
+                        for pattern in temp_patterns:
+                            match = re.search(pattern, content, re.IGNORECASE)
+                            if match:
+                                temp_value = float(match.group(1))
+                                # Convert to Celsius if needed (assuming input is in Celsius)
+                                if temp_value > 50:  # Likely Fahrenheit, convert to Celsius
+                                    temp_value = (temp_value - 32) * 5/9
+                                
+                                temperature_data = {
+                                    "value": round(temp_value, 1),
+                                    "source": filename,
+                                    "raw_content": content[:200] + "..." if len(content) > 200 else content
+                                }
+                                break
+                        
+                        if temperature_data:
+                            break
+                            
+                    except Exception as e:
+                        print(f"Error reading file {filename}: {str(e)}")
+                        continue
+        
+        # If no temperature found in files, set default
+        if not temperature_data:
+            temperature_data = {
+                "value": 37.0,  # Normal temperature
+                "source": "default",
+                "raw_content": "No temperature data found in files"
+            }
+        
+        # Check temperature and send WhatsApp alert if abnormal
+        temp_status = check_temperature_and_alert(patient_id, temperature_data["value"])
         
         if new_files:
             # Initialize blockchain if not already done
@@ -114,12 +285,28 @@ def collect_patient_data():
             return jsonify({
                 "status": "success",
                 "message": f"Data collection complete! Found {len(new_files)} new file(s)",
+                "temperature": {
+                    "value": temperature_data["value"],
+                    "unit": "°C",
+                    "status": temp_status,
+                    "alert_sent": temp_status != "normal",
+                    "source": temperature_data["source"],
+                    "raw_content": temperature_data["raw_content"]
+                },
                 "upload_results": upload_results
             })
         else:
             return jsonify({
                 "status": "warning",
-                "message": "No new patient data files were created during collection"
+                "message": "No new patient data files were created during collection",
+                "temperature": {
+                    "value": temperature_data["value"],
+                    "unit": "°C",
+                    "status": temp_status,
+                    "alert_sent": temp_status != "normal",
+                    "source": temperature_data["source"],
+                    "raw_content": temperature_data["raw_content"]
+                }
             })
             
     except Exception as e:
