@@ -1,5 +1,5 @@
 {
-  "address": "0x4ed0b76fBE3070a202C9a86D781814D454456dcb",
+  "address": "0x3291De1999ACB0895043f1bA483420A010121563",
   "abi": [
     {
       "anonymous": false,
@@ -126,6 +126,6 @@
       "type": "function"
     }
   ],
-  "deployer": "0x4fb73937898807E94E71f707B03974c0Bf83ADA7",
+  "deployer": "0x01b56B6EB960c941f73eaAecF7A033720AF8bb82",
   "rpc": "http://127.0.0.1:7545"
 }

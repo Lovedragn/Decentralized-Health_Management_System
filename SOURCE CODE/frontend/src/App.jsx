@@ -17,17 +17,13 @@ function App() {
   const [profileMenuOpen, setProfileMenuOpen] = useState(false)
   const [copiedAddress, setCopiedAddress] = useState(false)
   const [switchAccountMenuOpen, setSwitchAccountMenuOpen] = useState(false)
-  const [showWhatsAppModal, setShowWhatsAppModal] = useState(false)
-  const [whatsAppNumber, setWhatsAppNumber] = useState('')
-  const [highTempFile, setHighTempFile] = useState(null)
 
   // Profile data - will be updated with real Ganache accounts
   const [profileData, setProfileData] = useState({
     name: 'Dr. Sarah Chen',
     title: 'Blockchain Administrator',
     address: '0x4fb73937898807E94E71f707B03974c0Bf83ADA7',
-    avatar: '/api/placeholder/40/40',
-    whatsAppNumber: '+1234567890'
+    avatar: '/api/placeholder/40/40'
   })
 
   const profileNames = [
@@ -56,289 +52,25 @@ function App() {
     'Infrastructure Engineer'
   ]
 
-  const profileWhatsAppNumbers = [
-    '+1234567890',
-    '+1987654321',
-    '+1122334455',
-    '+1555666777',
-    '+1444333222',
-    '+1777888999',
-    '+1666555444',
-    '+1999888777',
-    '+1333444555',
-    '+1555222333'
-  ]
-
   const ganacheAccounts = [
     '0x4fb73937898807E94E71f707B03974c0Bf83ADA7',
-    '0x58997951b126b7683Af5cbd2B12591df30e12339',
-    '0xE6F8256aE1d328246155C6b0A7e5150613D80B8f',
-    '0x7bd66262DBeE5d575cB31b08ea364a6A572bF491',
-    '0x1a24502A50C3548B1dC9A5f67cC7028E07eA30D9',
-    '0x94EF3538AdD827282f240663391e6a6BB57B5dd1',
-    '0xfE73F50E1D3a01506227700c5BEF4556C9473f58',
-    '0xFbCf5523F376BD8517b7a16cB14eDd7a83410fc0',
-    '0xd5C93938A7E84b3f558d4f463E7f9034AF9c7FEe',
-    '0x0e328d2f7993D9Ab850Ff3f6786Bab21095034E5'
+    '0x8d5e2e6b1c5b8f9a2d3e4f5b6c7d8e9f0a1b2c3',
+    '0x1a2b3c4d5e6f7890a1b2c3d4e5f67890a1b2c3d4',
+    '0x5e6f7890a1b2c3d4e5f67890a1b2c3d4e5f67890',
+    '0x2b3c4d5e6f7890a1b2c3d4e5f67890a1b2c3d4e5',
+    '0x3d4e5f67890a1b2c3d4e5f67890a1b2c3d4e5f67',
+    '0x4e5f67890a1b2c3d4e5f67890a1b2c3d4e5f6789',
+    '0x5f67890a1b2c3d4e5f67890a1b2c3d4e5f67890a',
+    '0x67890a1b2c3d4e5f67890a1b2c3d4e5f67890a1',
+    '0x7890a1b2c3d4e5f67890a1b2c3d4e5f67890a1b'
   ]
-
-  // Function to check temperature in file content
-  const checkTemperatureInFile = async (file) => {
-    return new Promise((resolve) => {
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        const content = e.target.result.toLowerCase()
-        
-        // Look for temperature patterns
-        const tempPatterns = [
-          /body temperature[:\s]*(\d+\.?\d*)[°f]?/i,
-          /temperature[:\s]*(\d+\.?\d*)[°f]?/i,
-          /temp[:\s]*(\d+\.?\d*)[°f]?/i,
-          /fever[:\s]*(\d+\.?\d*)[°f]?/i
-        ]
-        
-        let temperature = null
-        for (const pattern of tempPatterns) {
-          const match = content.match(pattern)
-          if (match) {
-            temperature = parseFloat(match[1])
-            break
-          }
-        }
-        
-        // Check if temperature is higher than normal (98.6°F or 37°C)
-        const isHighTemp = temperature && (
-          (temperature > 98.6 && temperature < 200) || // Fahrenheit
-          (temperature > 37 && temperature < 50)     // Celsius
-        )
-        
-        resolve({ temperature, isHighTemp })
-      }
-      reader.readAsText(file)
-    })
-  }
-
-  // Function to send WhatsApp notification
-  const sendWhatsAppNotification = async (phoneNumber, temperature, fileName) => {
-    try {
-      // Create the WhatsApp message
-      const message = `🚨 High Temperature Alert!\n\nFile: ${fileName}\nTemperature: ${temperature}°F\nPatient ID: ${patientId}\n\nPlease review the medical record immediately.`
-      
-      // Method 1: Use Edge WhatsApp Auto Sender extension (PRIMARY METHOD)
-      if (window.whatsappAutoSender) {
-        try {
-          setMessages(prev => [...prev, {
-            type: 'info',
-            text: '🔧 Edge WhatsApp Auto Sender extension detected! Using extension for auto-send...'
-          }])
-          
-          const result = await window.whatsappAutoSender.send({
-            phone: phoneNumber.replace(/[+\s()-]/g, ''),
-            message: message
-          })
-          
-          if (result.success) {
-            setMessages(prev => [...prev, {
-              type: 'success',
-              text: `✅ WhatsApp notification sent automatically via Edge extension to ${phoneNumber} for high temperature (${temperature}°F)`
-            }])
-            return
-          } else {
-            setMessages(prev => [...prev, {
-              type: 'warning',
-              text: `Edge extension method failed: ${result.error}. Trying fallback...`
-            }])
-          }
-        } catch (error) {
-          setMessages(prev => [...prev, {
-            type: 'warning',
-            text: `Edge extension error: ${error.message}. Trying fallback...`
-          }])
-        }
-      }
-      
-      // Method 2: Try Edge-specific extension APIs
-      if (window.edgeWhatsAppSender) {
-        try {
-          await window.edgeWhatsAppSender.sendMessage(phoneNumber.replace(/[+\s()-]/g, ''), message)
-          setMessages(prev => [...prev, {
-            type: 'success',
-            text: `✅ WhatsApp sent via Edge WhatsApp Sender extension to ${phoneNumber}`
-          }])
-          return
-        } catch (error) {
-          console.log('Edge WhatsApp Sender extension failed')
-        }
-      }
-      
-      // Method 3: Try other common extension APIs
-      if (window.waSender) {
-        try {
-          await window.waSender.sendMessage(phoneNumber.replace(/[+\s()-]/g, ''), message)
-          setMessages(prev => [...prev, {
-            type: 'success',
-            text: `✅ WhatsApp sent via WA Sender extension to ${phoneNumber}`
-          }])
-          return
-        } catch (error) {
-          console.log('WA Sender extension failed')
-        }
-      }
-      
-      if (window.whatsappWebSender) {
-        try {
-          await window.whatsappWebSender.autoSend(phoneNumber.replace(/[+\s()-]/g, ''), message)
-          setMessages(prev => [...prev, {
-            type: 'success',
-            text: `✅ WhatsApp sent via Web Sender extension to ${phoneNumber}`
-          }])
-          return
-        } catch (error) {
-          console.log('WhatsApp Web Sender extension failed')
-        }
-      }
-      
-      // Method 4: Check for Edge extension content script injection
-      if (document.querySelector('#whatsapp-auto-sender-extension') || 
-          document.querySelector('[data-extension="whatsapp-auto-sender"]')) {
-        setMessages(prev => [...prev, {
-          type: 'info',
-          text: '🔧 Edge WhatsApp Auto Sender content script detected. Triggering auto-send...'
-        }])
-        
-        // Try to trigger the extension via custom event
-        const event = new CustomEvent('whatsappAutoSend', {
-          detail: { phone: phoneNumber.replace(/[+\s()-]/g, ''), message }
-        })
-        document.dispatchEvent(event)
-        
-        // Wait a moment for the extension to process
-        await new Promise(resolve => setTimeout(resolve, 2000))
-        
-        setMessages(prev => [...prev, {
-          type: 'success',
-          text: `✅ WhatsApp auto-send triggered via Edge extension content script`
-        }])
-        return
-      }
-      
-      // Method 5: Fallback to popup method
-      setMessages(prev => [...prev, {
-        type: 'warning',
-        text: '⚠️ Edge WhatsApp Auto Sender extension not responding. Using fallback popup method...'
-      }])
-      
-      const popup = window.open('', '_blank', 'width=800,height=600')
-      
-      if (popup) {
-        // Write HTML with auto-send script and Edge-specific instructions
-        popup.document.write(`
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <title>WhatsApp Auto Sender - Edge Extension</title>
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <style>
-              body { margin: 0; padding: 20px; font-family: Arial, sans-serif; background: #f0f0f0; }
-              .container { max-width: 400px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-              .status { text-align: center; margin: 20px 0; font-weight: bold; }
-              .loading { color: #666; }
-              .success { color: #25d366; }
-              .error { color: #dc3545; }
-              .auto-send-info { background: #e8f5e8; padding: 15px; border-radius: 5px; margin: 10px 0; }
-              .extension-note { background: #0078d4; color: white; padding: 15px; border-radius: 5px; margin: 10px 0; }
-              .edge-logo { font-size: 24px; margin-bottom: 10px; }
-            </style>
-          </head>
-          <body>
-            <div class="container">
-              <h2>🤖 WhatsApp Auto Sender</h2>
-              <div class="status loading" id="status">Initializing WhatsApp...</div>
-              <div class="extension-note">
-                <div class="edge-logo">�</div>
-                <strong>Edge Extension User:</strong><br>
-                Make sure your "WhatsApp Auto Sender" extension is enabled and has proper permissions for WhatsApp Web.
-              </div>
-              <div class="auto-send-info">
-                <strong>Auto-sending message to:</strong><br>
-                ${phoneNumber}<br><br>
-                <strong>Message:</strong><br>
-                ${message.replace(/\n/g, '<br>')}
-              </div>
-            </div>
-            
-            <script>
-              // Check for Edge extensions
-              if (window.whatsappAutoSender || window.edgeWhatsAppSender || window.waSender || window.whatsappWebSender) {
-                document.getElementById('status').innerHTML = '🔧 Edge extension detected! Using extension...';
-                setTimeout(() => {
-                  window.close();
-                }, 1000);
-              } else {
-                // Auto-redirect to WhatsApp
-                setTimeout(() => {
-                  document.getElementById('status').innerHTML = '📱 Opening WhatsApp Web...';
-                  window.location.href = 'https://web.whatsapp.com/send?phone=${phoneNumber.replace(/[+\s()-]/g, '')}&text=${encodeURIComponent(message)}';
-                  
-                  // Try to auto-send after WhatsApp loads
-                  setTimeout(() => {
-                    try {
-                      const sendButton = document.querySelector('[data-testid="send"], button[aria-label*="Send"], button[type="submit"]');
-                      if (sendButton && !sendButton.disabled) {
-                        sendButton.click();
-                        document.getElementById('status').innerHTML = '✅ Message sent automatically!';
-                        document.getElementById('status').className = 'status success';
-                        
-                        setTimeout(() => {
-                          window.close();
-                        }, 2000);
-                      } else {
-                        document.getElementById('status').innerHTML = '⚠️ Please click send manually or check Edge extension';
-                        document.getElementById('status').className = 'status error';
-                      }
-                    } catch (error) {
-                      document.getElementById('status').innerHTML = '⚠️ Please click send manually or check Edge extension';
-                      document.getElementById('status').className = 'status error';
-                    }
-                  }, 3000);
-                }, 1000);
-              }
-            </script>
-          </body>
-          </html>
-        `)
-        
-        setMessages(prev => [...prev, {
-          type: 'info',
-          text: 'Edge-specific fallback popup opened - attempting automatic send'
-        }])
-        
-      } else {
-        // Final fallback to regular WhatsApp Web
-        const whatsappUrl = `https://wa.me/${phoneNumber.replace(/[+\s()-]/g, '')}?text=${encodeURIComponent(message)}`
-        window.open(whatsappUrl, '_blank')
-        
-        setMessages(prev => [...prev, {
-          type: 'warning',
-          text: `⚠️ Edge extension not working. WhatsApp opened manually for ${phoneNumber} - please click send`
-        }])
-      }
-      
-    } catch (error) {
-      setMessages(prev => [...prev, {
-        type: 'error',
-        text: `❌ Failed to send WhatsApp notification: ${error.message}`
-      }])
-    }
-  }
 
   const switchAccount = (accountIndex) => {
     const newProfileData = {
       name: profileNames[accountIndex],
       title: profileTitles[accountIndex],
       address: ganacheAccounts[accountIndex],
-      avatar: `https://picsum.photos/seed/${ganacheAccounts[accountIndex]}/40/40.jpg`,
-      whatsAppNumber: profileWhatsAppNumbers[accountIndex]
+      avatar: `https://picsum.photos/seed/${ganacheAccounts[accountIndex]}/40/40.jpg`
     }
     setProfileData(newProfileData)
     setSwitchAccountMenuOpen(false)
@@ -406,102 +138,46 @@ function App() {
   }
 
   const collectPatientData = async () => {
-    if (!patientId.trim()) {
-      setMessages(prev => [...prev, {
-        type: 'error',
-        text: 'Please enter a patient ID'
-      }])
-      return
-    }
-
     setIsCollecting(true)
-    setCollectionProgress(0)
     setMessages([])
+    setCollectionProgress(0)
 
     try {
-      // Simulate file upload with temperature checking
-      const simulateFileUpload = async () => {
-        // Create a sample file for demonstration
-        const sampleFile = new File([
-          `Patient ID: ${patientId}\nDate: ${new Date().toISOString()}\nBody Temperature: 99.2°F\nHeart Rate: 72 bpm\nBlood Pressure: 120/80 mmHg\nDiagnosis: Patient shows elevated body temperature\n\nMedical Notes:\nPatient presents with symptoms of fever.\nBody temperature reading indicates potential infection.\nRecommended further observation and testing.`
-        ], `medical_record_${patientId}.txt`, { type: 'text/plain' })
-
-        // Check temperature in the file
-        const { temperature, isHighTemp } = await checkTemperatureInFile(sampleFile)
-        
-        if (isHighTemp) {
-          // Automatically send WhatsApp notification
-          await sendWhatsAppNotification(
-            profileData.whatsAppNumber,
-            temperature,
-            sampleFile.name
-          )
-          
-          setMessages(prev => [...prev, {
-            type: 'warning',
-            text: `High temperature detected: ${temperature}°F. WhatsApp notification sent automatically to ${profileData.whatsAppNumber}`
-          }])
-          
-          // Continue with upload after sending notification
-          return { success: true, highTemp: true }
-        }
-
-        // Continue with normal upload if no high temperature
-        return { success: true, highTemp: false }
-      }
-
       // Simulate progress
-      for (let i = 0; i <= 100; i += 10) {
-        setCollectionProgress(i)
-        await new Promise(resolve => setTimeout(resolve, 200))
+      const progressInterval = setInterval(() => {
+        setCollectionProgress(prev => {
+          if (prev >= 90) {
+            clearInterval(progressInterval)
+            return 90
+          }
+          return prev + 10
+        })
+      }, 200)
+
+      const response = await axios.post(`${API_BASE_URL}/collect-data`, {
+        patient_id: patientId
+      })
+
+      clearInterval(progressInterval)
+      setCollectionProgress(100)
+
+      if (response.data.status === 'success') {
+        addMessage('success', response.data.message)
+        response.data.upload_results?.forEach(result => {
+          if (result.status === 'success') {
+            addMessage('success', result.message)
+          } else {
+            addMessage('error', result.message)
+          }
+        })
+      } else {
+        addMessage('warning', response.data.message)
       }
-
-      const result = await simulateFileUpload()
-      
-      setMessages(prev => [...prev, {
-        type: 'success',
-        text: `Patient data uploaded successfully for ID: ${patientId}`
-      }])
-
     } catch (error) {
-      setMessages(prev => [...prev, {
-        type: 'error',
-        text: 'Failed to collect patient data'
-      }])
       addMessage('error', `Data collection failed: ${error.response?.data?.error || error.message}`)
     } finally {
       setIsCollecting(false)
       setTimeout(() => setCollectionProgress(0), 1000)
-    }
-  }
-
-  const proceedWithUpload = async () => {
-    if (!highTempFile) return
-
-    try {
-      // Send WhatsApp notification
-      await sendWhatsAppNotification(
-        profileData.whatsAppNumber,
-        highTempFile.temperature,
-        highTempFile.file.name
-      )
-
-      // Continue with the upload
-      setMessages(prev => [...prev, {
-        type: 'success',
-        text: `Patient data uploaded successfully for ID: ${patientId}`
-      }])
-
-      // Reset modal state
-      setShowWhatsAppModal(false)
-      setHighTempFile(null)
-      setWhatsAppNumber('')
-
-    } catch (error) {
-      setMessages(prev => [...prev, {
-        type: 'error',
-        text: 'Failed to complete upload'
-      }])
     }
   }
 
@@ -687,37 +363,6 @@ function App() {
                 </div>
 
                 <div className="profile-menu-section">
-                  <div className="whatsapp-input-section">
-                    <label className="whatsapp-label">WhatsApp Number</label>
-                    <div className="whatsapp-input-group">
-                      <input
-                        type="text"
-                        value={profileData.whatsAppNumber}
-                        onChange={(e) => setProfileData(prev => ({ ...prev, whatsAppNumber: e.target.value }))}
-                        placeholder="+1234567890"
-                        className="whatsapp-input"
-                      />
-                      <button 
-                        className="save-whatsapp-btn"
-                        onClick={() => {
-                          // Update the profileWhatsAppNumbers array for current account
-                          const currentAccountIndex = ganacheAccounts.indexOf(profileData.address)
-                          if (currentAccountIndex !== -1) {
-                            profileWhatsAppNumbers[currentAccountIndex] = profileData.whatsAppNumber
-                            setMessages(prev => [...prev, {
-                              type: 'success',
-                              text: `WhatsApp number updated for ${profileData.name}`
-                            }])
-                          }
-                        }}
-                      >
-                        Save
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="profile-menu-section">
                   <button 
                     className="switch-account-btn"
                     onClick={() => setSwitchAccountMenuOpen(!switchAccountMenuOpen)}
@@ -744,7 +389,6 @@ function App() {
                             <div className="account-name">{profileNames[index]}</div>
                             <div className="account-title">{profileTitles[index]}</div>
                             <div className="account-address">{account.slice(0, 6)}...{account.slice(-4)}</div>
-                            <div className="account-whatsapp">{profileWhatsAppNumbers[index]}</div>
                           </div>
                           {profileData.address === account && (
                             <Check size={16} className="current-account" />
@@ -895,55 +539,6 @@ function App() {
           </section>
         </div>
       </div>
-
-      {/* WhatsApp Notification Modal */}
-      {showWhatsAppModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h3>🚨 High Temperature Alert</h3>
-              <button 
-                className="modal-close"
-                onClick={() => setShowWhatsAppModal(false)}
-              >
-                ×
-              </button>
-            </div>
-            <div className="modal-body">
-              <div className="alert-message">
-                <AlertCircle size={24} className="alert-icon" />
-                <div>
-                  <p><strong>High temperature detected:</strong> {highTempFile?.temperature}°F</p>
-                  <p><strong>File:</strong> {highTempFile?.file.name}</p>
-                  <p><strong>Patient ID:</strong> {patientId}</p>
-                </div>
-              </div>
-              
-              <div className="whatsapp-info">
-                <p><strong>WhatsApp notification will be sent to:</strong></p>
-                <div className="contact-info">
-                  <span className="contact-name">{profileData.name}</span>
-                  <span className="contact-number">{profileData.whatsAppNumber}</span>
-                </div>
-              </div>
-            </div>
-            <div className="modal-footer">
-              <button 
-                className="secondary-btn"
-                onClick={() => setShowWhatsAppModal(false)}
-              >
-                Cancel
-              </button>
-              <button 
-                className="primary-btn"
-                onClick={proceedWithUpload}
-              >
-                Send WhatsApp & Upload
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }
