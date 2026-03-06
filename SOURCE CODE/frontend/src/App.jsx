@@ -521,7 +521,6 @@ function App() {
 
             {records.length > 0 && (
               <div className="records-container">
-                <h3>Retrieved Records</h3>
                 {records.map((record) => (
                   <div key={record.index} className="record-card">
                     <div className="record-header">

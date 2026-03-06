@@ -1,4 +1,4 @@
-/* Global Styles - Enhanced Dark Theme */
+/* Global Styles - Professional Dark Theme */
 * {
   margin: 0;
   padding: 0;
@@ -13,10 +13,10 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: 
-    radial-gradient(circle at 20% 50%, rgba(0, 0, 0, 0.3) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(0, 0, 0, 0.2) 0%, transparent 50%),
-    radial-gradient(circle at 40% 20%, rgba(0, 0, 0, 0.2) 0%, transparent 50%),
-    linear-gradient(135deg, #000000 0%, #0a0a0a 50%, #111111 100%);
+    radial-gradient(circle at 20% 50%, rgba(15, 23, 42, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(15, 23, 42, 0.2) 0%, transparent 50%),
+    radial-gradient(circle at 40% 20%, rgba(15, 23, 42, 0.2) 0%, transparent 50%),
+    linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #111827 100%);
   color: #e2e8f0;
   line-height: 1.6;
   min-height: 100vh;
@@ -50,23 +50,22 @@ body::before {
   overflow: hidden;
 }
 
-/* Header - Enhanced Black Theme */
+/* Header - Professional Dark Theme */
 .app-header {
   background: 
-    linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(10, 10, 10, 0.9) 30%, rgba(20, 20, 20, 0.9) 70%, rgba(30, 30, 30, 0.9) 100%),
-    linear-gradient(90deg, #000000 0%, #1a1a1a 50%, #2a2a2a 100%);
-  color: white;
+    linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.9) 30%, rgba(15, 23, 42, 0.9) 70%, rgba(30, 41, 59, 0.9) 100%),
+    linear-gradient(90deg, #0f172a 0%, #1e293b 50%, #111827 100%);
+  color: #f8fafc;
   padding: 2rem 2rem 1.5rem 2rem;
   text-align: left;
   box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.6),
-    0 0 0 1px rgba(255, 255, 255, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    0 8px 32px rgba(15, 23, 42, 0.4),
+    0 0 0 1px rgba(248, 250, 252, 0.1),
+    inset 0 1px 0 rgba(248, 250, 252, 0.05);
   border-bottom: 3px solid transparent;
   background-clip: padding-box;
   position: relative;
-  overflow: hidden;
-  z-index: 10001;
+  z-index: 10000;
 }
 
 .app-header::before {
@@ -651,19 +650,19 @@ body::before {
   overflow: hidden;
 }
 
-/* Sections - Enhanced Black Cards */
+/* Sections - Professional Dark Theme */
 .section {
   background: 
-    linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(10, 10, 10, 0.9) 100%),
-    linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+    linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.9) 100%),
+    linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  border: 1px solid rgba(248, 250, 252, 0.1);
   border-radius: 20px;
   padding: 2rem;
   box-shadow: 
-    0 20px 40px rgba(0, 0, 0, 0.6),
-    0 0 0 1px rgba(255, 255, 255, 0.05),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(20px);
+    0 0 0 3px rgba(15, 23, 42, 0.1),
+    0 0 20px rgba(15, 23, 42, 0.1),
+    inset 0 2px 8px rgba(15, 23, 42, 0.4);
+  transform: translateY(-1px);
   position: relative;
   overflow: hidden;
   transition: all 0.3s ease;
@@ -787,29 +786,24 @@ body::before {
   transform: translateY(-1px);
 }
 
-/* Buttons - Enhanced Black */
+/* Buttons - Professional Dark Theme */
 .primary-btn {
   width: 100%;
- background: 
-  linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(240, 240, 240, 0.9) 50%, rgba(220, 220, 220, 0.9) 100%),
-  linear-gradient(135deg, #ffffff 0%, #f0f0f0 50%, #dcdcdc 100%);
-color: #000000;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 1rem 1.5rem;
+  background: 
+    linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.9) 100%),
+    linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #111827 100%);
+  color: #f8fafc;
+  border: 1px solid rgba(248, 250, 252, 0.2);
+  padding: 1rem 2rem;
   border-radius: 16px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 
-    0 8px 24px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
-  text-transform: uppercase;
   letter-spacing: 0.05em;
   position: relative;
   overflow: hidden;
@@ -822,16 +816,15 @@ color: #000000;
   left: -100%;
   right: -100%;
   bottom: 0;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  background: linear-gradient(90deg, transparent, rgba(15, 23, 42, 0.1), transparent);
   transition: transform 0.6s ease;
 }
 
 .primary-btn:hover:not(:disabled) {
   transform: translateY(-3px);
- background: 
-  linear-gradient(135deg, rgba(255, 255, 255, 0.804) 0%, rgba(240, 240, 240, 0.769) 70%),
-  linear-gradient(135deg, #7a0000 0%, #f0f0f0bf 50%, #dcdcdcd1 100%);
-color: #000000;
+  background: 
+    linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.9) 100%),
+    linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #111827 100%);
 }
 
 .primary-btn:hover:not(:disabled)::before {
@@ -846,17 +839,21 @@ color: #000000;
   opacity: 0.5;
   cursor: not-allowed;
   transform: none;
- background: 
-  linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(240, 240, 240, 0.9) 100%),
-  linear-gradient(135deg, #ffffff 0%, #f0f0f0 50%, #dcdcdc 100%);
-color: #000000;
-  border-color: rgba(255, 255, 255, 0.1);
+  background: 
+    linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.9) 100%),
+    linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #111827 100%);
+  border-color: rgba(248, 250, 252, 0.1);
   box-shadow: 
     0 4px 16px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.02);
 }
 
 .download-btn {
+  background: 
+    linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.9) 100%),
+    linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #111827 100%);
+  color: #f8fafc;
+  border: 1px solid rgba(248, 250, 252, 0.1);
  background: 
   linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(240, 240, 240, 0.9) 100%),
   linear-gradient(135deg, #ffffff 0%, #f0f0f0 50%, #dcdcdc 100%);
@@ -950,18 +947,18 @@ color: #000000;
   letter-spacing: 0.02em;
 }
 
-/* Output Section - Enhanced Black */
+/* Output Section - Professional Dark Theme */
 .output-section {
   background: 
-    linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(10, 10, 10, 0.9) 100%),
-    linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+    linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.9) 100%),
+    linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  border: 1px solid rgba(248, 250, 252, 0.1);
   border-radius: 20px;
   padding: 2rem;
   box-shadow: 
-    0 20px 40px rgba(0, 0, 0, 0.6),
-    0 0 0 1px rgba(255, 255, 255, 0.05),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    0 0 0 3px rgba(15, 23, 42, 0.1),
+    0 0 20px rgba(15, 23, 42, 0.1),
+    inset 0 2px 8px rgba(15, 23, 42, 0.4);
   overflow-y: auto;
   overflow-x: hidden;
   backdrop-filter: blur(20px);
@@ -995,9 +992,6 @@ color: #000000;
   gap: 0.75rem;
   position: sticky;
   top: 0;
-  background: 
-    linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(10, 10, 10, 0.95) 100%),
-    linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   z-index: 10;
   backdrop-filter: blur(20px);
