@@ -12,6 +12,17 @@ function App() {
   const [isQuerying, setIsQuerying] = useState(false)
   const [collectionProgress, setCollectionProgress] = useState(0)
   const [messages, setMessages] = useState([])
+
+  // Auto-dismiss messages after 5 seconds
+  useEffect(() => {
+    if (messages.length > 0) {
+      const timer = setTimeout(() => {
+        setMessages(prev => prev.slice(1)) // Remove first message after 5 seconds
+      }, 5000)
+      
+      return () => clearTimeout(timer)
+    }
+  }, [messages])
   const [records, setRecords] = useState([])
   const [blockchainStatus, setBlockchainStatus] = useState(null)
   const [profileMenuOpen, setProfileMenuOpen] = useState(false)
@@ -489,7 +500,7 @@ function App() {
             </h2>
             
             <div className="messages-container">
-              {messages.length === 0 ? (
+              {messages.length === 0 && records.length === 0 ? (
                 <div className="empty-state">
                   <FileText size={48} className="empty-icon" />
                   <p>No output yet. Perform an action to see results.</p>
