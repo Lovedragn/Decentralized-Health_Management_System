@@ -46,7 +46,7 @@ function App() {
   ]
 
   const profileTitles = [
-    'Blockchain Administrator',
+    'Blockchain Administraor',
     'Senior Researcher',
     'Data Security Officer',
     'Medical Director',
