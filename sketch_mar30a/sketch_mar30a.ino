@@ -12,8 +12,23 @@ bool startReading = false;
 
 void setup() {
   Serial.begin(9600);
+  delay(2000);
+
   dht.begin();
-  pox.begin();
+
+  Wire.begin();          // important
+  delay(2000);           // give sensor time
+//wait
+  Serial.println("INIT MAX30100...");
+
+  if (!pox.begin()) {
+    Serial.println("FAILED");
+  } else {
+    Serial.println("SUCCESS");
+
+    // 🔥 THIS LINE IS CRITICAL
+    pox.setIRLedCurrent(MAX30100_LED_CURR_7_6MA);
+  }
 }
 
 void loop() {
@@ -21,7 +36,7 @@ void loop() {
   // Check command from PC
   if (Serial.available()) {
     String cmd = Serial.readStringUntil('\n');
-
+    cmd.trim();   // 🔥 important
     if (cmd == "START") {
       startReading = true;
     }
@@ -53,9 +68,9 @@ void loop() {
     }
 
     // Calculate average
-    float avgTemp = tempSum / count;
-    float avgSpo2 = spo2Sum / count;
-    float avgBpm = bpmSum / count;
+   float avgTemp = count > 0 ? tempSum / count : 37.0;
+float avgSpo2 = count > 0 ? spo2Sum / count : 0;
+float avgBpm  = count > 0 ? bpmSum / count : 0;
 
     // Send to PC
     Serial.print("RESULT:");

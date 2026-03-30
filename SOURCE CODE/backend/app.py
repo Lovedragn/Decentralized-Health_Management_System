@@ -34,8 +34,13 @@ contract = None
 selected_account = None
 
 # Arduino serial configuration
-arduino = serial.Serial('COM3', 9600, timeout=2)  # change COM port if needed
-time.sleep(2)
+try:
+    arduino = serial.Serial('COM3', 9600, timeout=2)
+    time.sleep(2)
+    print("Arduino connected")
+except Exception as e:
+    arduino = None
+    print("Arduino error:", e)
 
 def send_whatsapp_message(patient_id, temperature, status, user_phone):
     """Send WhatsApp message to patient about abnormal temperature using template"""
