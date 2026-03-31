@@ -1,0 +1,6 @@
+Patient ID: patient001
+temperature: 100.5°C
+Heart Rate: 120 bpm
+Blood Pressure: 140/90 mmHg
+Notes: Patient showing fever symptoms
+Timestamp: 2026-03-06 11:20:30
