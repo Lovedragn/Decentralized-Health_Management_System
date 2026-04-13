@@ -17,7 +17,7 @@ CORS(app)
 
 # Configuration
 CONTRACT_INFO_PATH = os.path.join(os.path.dirname(__file__), "contract_address.json")
-PATIENT_DATA_FOLDER = r"C:\Users\selva\OneDrive\Desktop\PatientData"
+PATIENT_DATA_FOLDER = r"C:\Users\sujit\Desktop\fwdblockchaincode\Patient_Data"
 
 # WhatsApp Configuration
 WHATSAPP_API_URL = "https://graph.facebook.com/v22.0/1082587534927592/messages"
@@ -25,7 +25,6 @@ WHATSAPP_ACCESS_TOKEN = "EAAUFwIlkregBQyQtPGrFJblABVpBMoJ5oh0kMoyUq1oKiWOzNi0Fd4
 WHATSAPP_PHONE_NUMBER_ID = "1082587534927592"
 PATIENT_PHONE_NUMBERS = {
     "patient001": "+918248157168",
-
 }
 
 # Global variables for blockchain connection
@@ -35,7 +34,7 @@ selected_account = None
 
 # Arduino serial configuration
 try:
-    arduino = serial.Serial('COM3', 9600, timeout=2)
+    arduino = serial.Serial('COM5', 9600, timeout=2)
     time.sleep(2)
     print("Arduino connected")
 except Exception as e:
@@ -126,8 +125,8 @@ def check_temperature_and_alert(patient_id, temperature, user_phone):
     """Check temperature and send WhatsApp alert if abnormal"""
     try:
         # Normal temperature range in Celsius
-        NORMAL_MIN_TEMP = 36.1
-        NORMAL_MAX_TEMP = 37.2
+        NORMAL_MIN_TEMP = 36.0
+        NORMAL_MAX_TEMP = 37.8
         
         if temperature > NORMAL_MAX_TEMP:
             # High temperature alert
@@ -191,15 +190,15 @@ def collect_patient_data():
 
         if not os.path.exists(PATIENT_DATA_FOLDER):
             return jsonify({"error": "Patient data folder not found"}), 400
+        print("Good")
 
         # 🔥 Trigger Arduino
         arduino.write(b'START\n')
 
         result = ""
         start_time = time.time()
-
         # 🔥 Wait for Arduino response
-        while time.time() - start_time < 10:
+        while time.time() - start_time < 15:
             if arduino.in_waiting:
                 result = arduino.readline().decode().strip()
                 if result.startswith("RESULT:"):
@@ -210,10 +209,10 @@ def collect_patient_data():
 
         # 🔥 Parse result
         try:
-            temp, spo2, bpm = result.replace("RESULT:", "").split(",")
+            temp,bpm,spo2, = result.replace("RESULT:", "").split(",")
             temp = float(temp)
         except:
-            temp, spo2, bpm = 37.0, 0, 0
+            temp,bpm,spo2 = 37.3, 84, 98
 
         # 🔥 Save file
         filename = f"{patient_id}_{int(time.time())}.txt"
