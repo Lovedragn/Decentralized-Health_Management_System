@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import { Upload, Search, Activity, FileText, Download, AlertCircle, CheckCircle, Clock, Database, Loader2, Wallet, Copy, Check, User, ChevronUp, ArrowRight } from 'lucide-react'
+import { Upload, Search, Activity, FileText, Download, AlertCircle, CheckCircle, Clock, Database, Loader2, Wallet, Copy, Check, User, ChevronUp} from 'lucide-react'
 import './App.css'
 
 const API_BASE_URL = 'http://localhost:5000/api'
@@ -54,9 +54,9 @@ function App() {
   ]
 
   const ganacheAccounts = [
-    '0xB8F93C0197812D155C78ba1C8600B028c4c51300',
-    '0xB8F93C0197812D155C78ba1C8600B028c4c51300',
-    '0x9Da25773B6a4e542202527209A41432b6cC30308',
+    '0xe488c139679EDFE1EAc8636C4e7D49ca719B0cEc',
+    '0xe488c139679EDFE1EAc8636C4e7D49ca719B0cEc',
+    '0xe488c139679EDFE1EAc8636C4e7D49ca719B0cEc',
     '0x9Da25773B6a4e542202527209A41432b6cC30308',
     '0x2b3c4d5e6f7890a1b2c3d4e5f67890a1b2c3d4e5'  
   ]

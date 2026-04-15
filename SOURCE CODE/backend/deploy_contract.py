@@ -1,5 +1,3 @@
-# deploy_contract.py
-# deploy_contract.py
 import json
 from solcx import compile_standard, install_solc
 from web3 import Web3
