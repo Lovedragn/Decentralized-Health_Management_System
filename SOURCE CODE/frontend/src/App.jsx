@@ -38,11 +38,11 @@ function App() {
   })
 
   const profileNames = [
-    'Dr. Sarah Chen',
-    'Prof. Michael Roberts', 
+    'Mr. Sujith',
+    'Mr. SelvaGanapathy', 
     'Dr. Emily Watson',
-    'Dr. James Wilson',
-    'Dr. Lisa Anderson'
+    'Dr. Tashvani',
+    'Mrs. Gopavali mela'
   ]
 
   const profileTitles = [
@@ -54,11 +54,11 @@ function App() {
   ]
 
   const ganacheAccounts = [
-    '0xe488c139679EDFE1EAc8636C4e7D49ca719B0cEc',
-    '0xe488c139679EDFE1EAc8636C4e7D49ca719B0cEc',
-    '0xe488c139679EDFE1EAc8636C4e7D49ca719B0cEc',
-    '0x9Da25773B6a4e542202527209A41432b6cC30308',
-    '0x2b3c4d5e6f7890a1b2c3d4e5f67890a1b2c3d4e5'  
+    '0x9DaDdf6B0eC7f159ddFdb7CCC668631BE3bd4af2',
+    '0x526069A9f9c7e02B8e79BA36b41775638Bdf797d',
+    '0xe5d241AF2B4d81236A5799ed9001c184d6cb9271',
+    '0x047a16040198D49ec3A2Ac0207c5D88587B4833b',
+    '0xfB7C076bb433AaA0dF8034Db718Ed22904fb58a3'  
   ]
 
   const switchAccount = (accountIndex) => {

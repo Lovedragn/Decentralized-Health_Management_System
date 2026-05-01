@@ -57,25 +57,25 @@ def send_whatsapp_message(patient_id, temperature, status, user_phone):
             "to": patient_phone,
             "type": "template",
             "template": {
-                "name": "hello_world",  # You need to create this template in WhatsApp Business
+                "name": "health_care",  # You need to create this template in WhatsApp Business
                 "language": {
                     "code": "en_US"
                 },
-                # "components": [
-                #     {
-                #         "type": "body",
-                #         "parameters": [
-                #             {
-                #                 "type": "text",
-                #                 "text": str(temperature)
-                #             },
-                #             {
-                #                 "type": "text", 
-                #                 "text": "high" if status == "high" else "low"
-                #             }
-                #         ]
-                #     }
-                # ]
+                "components": [
+                    {
+                        "type": "body",
+                        "parameters": [
+                            {
+                                "type": "text",
+                                "text": str(temperature)
+                            },
+                            {
+                                "type": "text", 
+                                "text": "high" if status == "high" else "low"
+                            }
+                        ]
+                    }
+                ]
             }
         }
         
